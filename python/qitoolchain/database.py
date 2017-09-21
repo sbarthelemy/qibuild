@@ -2,6 +2,7 @@
 ## Use of this source code is governed by a BSD-style license that can be
 ## found in the COPYING file.
 import os
+import urlparse
 
 from qisys import ui
 from qisys.qixml import etree
@@ -174,6 +175,9 @@ class DataBase(object):
 
     def handle_package(self, package, feed):
         if package.url:
+            # package.url can be relative to feed:
+            if not "://" in package.url:
+                package.url = urlparse.urljoin(feed, package.url)
             self.download_package(package)
         if package.directory:
             self.handle_local_package(package, feed)
